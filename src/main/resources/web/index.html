@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slides library</title>
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/lib/font/source-sans-pro/source-sans-pro.css">
+  <link rel="stylesheet" href="/assets/app.css">
+  <script type="module" src="/assets/app.js"></script>
+</head>
+<body class="library">
+  <header class="top">
+    <a class="brand" href="/" aria-label="Slides library, home">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="12" width="52" height="38" rx="4"/><rect class="bar" x="12" y="18" width="40" height="5" rx="1"/></svg>
+      <span>Slides</span>
+    </a>
+    <form class="search" role="search" id="search-form">
+      <label class="visually-hidden" for="q">Search the slides</label>
+      <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search titles, slides, code and notes">
+      <kbd aria-hidden="true">/</kbd>
+    </form>
+    <div class="top-actions">
+      <button id="join-button" type="button">Join a live talk</button>
+      <button id="look-button" type="button">Look and feel</button>
+      <button id="status-button" type="button" class="sync" aria-describedby="sync-text"><span class="dot"></span><span id="sync-text">Connecting</span></button>
+    </div>
+  </header>
+
+  <section id="live" class="live" hidden aria-label="Live presentations"></section>
+
+  <nav id="sources" class="sources" hidden aria-label="Sources"></nav>
+
+  <main id="library" class="years" aria-live="polite"></main>
+  <main id="results" class="results" hidden aria-live="polite"></main>
+
+  <dialog id="look-dialog" class="panel">
+    <form method="dialog" id="look-form">
+      <h2>Look and feel</h2>
+      <label for="theme-select">Theme</label>
+      <select id="theme-select"></select>
+      <p class="hint">reveal.js themes, from the theme directories and the built-in ones. A deck can choose its own with <code>theme:</code> in its front matter.</p>
+      <label for="custom-css">Custom CSS, applied over the theme</label>
+      <textarea id="custom-css" rows="10" spellcheck="false" placeholder=".reveal h2 { letter-spacing: 0.02em; }"></textarea>
+      <div class="dialog-actions">
+        <button value="cancel" type="submit" formnovalidate>Cancel</button>
+        <button id="look-save" value="save" class="primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="join-dialog" class="panel">
+    <form method="dialog" id="join-form">
+      <h2>Join a live talk</h2>
+      <label for="join-code">Code shown by the presenter</label>
+      <input id="join-code" autocomplete="off" spellcheck="false" maxlength="12" pattern="[A-Za-z0-9]+" placeholder="k7hd2q">
+      <div class="dialog-actions">
+        <button value="cancel" type="submit" formnovalidate>Cancel</button>
+        <button value="join" class="primary" type="submit">Join</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="status-dialog" class="panel">
+    <h2>Synchronization</h2>
+    <dl id="status-details"></dl>
+    <div class="dialog-actions">
+      <button id="scan-now" type="button">Check the sources now</button>
+      <button id="status-close" class="primary" type="button">Close</button>
+    </div>
+  </dialog>
+</body>
+</html>

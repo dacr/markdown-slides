@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Speaker view</title>
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/webjars/highlightjs__cdn-assets/11.11.1/styles/base16/zenburn.min.css">
+  <link rel="stylesheet" href="/assets/deck.css">
+  <link rel="stylesheet" href="/assets/speaker.css">
+  <script src="/webjars/marked/18.0.14/lib/marked.umd.js"></script>
+  <script src="/webjars/highlightjs__cdn-assets/11.11.1/highlight.min.js"></script>
+  <script type="module" src="/assets/speaker.js"></script>
+</head>
+<body class="speaker">
+  <header class="speaker-top">
+    <h1 id="title"></h1>
+    <span id="followers" class="followers">0 participants</span>
+    <span class="room">Code <strong id="code"></strong></span>
+    <button id="audience" title="Open the slides for the projector, they follow this view">Audience window</button>
+    <button id="end" class="end" title="Participants stop following">End live</button>
+  </header>
+
+  <section class="speaker-current" aria-label="Current slide">
+    <div id="current"></div>
+  </section>
+
+  <aside class="speaker-side">
+    <section class="speaker-next" aria-labelledby="next-label">
+      <h2 id="next-label">Next slide</h2>
+      <div id="next" class="preview"></div>
+    </section>
+    <section class="speaker-notes" aria-labelledby="notes-heading">
+      <div class="notes-head">
+        <h2 id="notes-heading">Notes</h2>
+        <button id="notes-smaller" title="Smaller notes" aria-label="Smaller notes">A−</button>
+        <button id="notes-larger" title="Larger notes" aria-label="Larger notes">A+</button>
+      </div>
+      <div id="notes" class="notes"></div>
+    </section>
+  </aside>
+
+  <footer class="speaker-bottom">
+    <div class="timer">
+      <span class="label">Elapsed</span>
+      <span id="elapsed" class="big">0:00</span>
+      <button id="timer-pause">Pause</button>
+      <button id="timer-reset">Reset</button>
+    </div>
+    <div class="timer">
+      <span class="label">On this slide</span>
+      <span id="slide-time">0:00</span>
+    </div>
+    <span id="remaining" class="remaining" hidden></span>
+    <div class="nav">
+      <button id="prev" title="Previous step">Previous</button>
+      <span id="position" class="position"></span>
+      <button id="next-step" class="primary" title="Next step">Next</button>
+      <button id="black" title="Black screen (B)">Black</button>
+    </div>
+    <span id="clock" class="clock"></span>
+  </footer>
+
+  <div id="ended" class="speaker-message" hidden>
+    <p>This live presentation has ended.</p>
+    <a href="/">Open the library</a>
+  </div>
+  <div id="no-token" class="speaker-message" hidden>
+    <p>Only the presenter can open the speaker view : press S in the slides to open it.</p>
+    <a href="/">Open the library</a>
+  </div>
+</body>
+</html>

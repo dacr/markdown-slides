@@ -1,0 +1,236 @@
+/* A dark control room around the slides : the slides keep their theme. */
+
+html, body.speaker {
+  height: 100%;
+  margin: 0;
+}
+
+body.speaker {
+  --bg: #141920;
+  --panel: #1d242d;
+  --line: #2d3742;
+  --ink: #e6eaf0;
+  --muted: #9aa7b6;
+  --accent: #ff6501;
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(280px, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "top top" "current side" "bottom bottom";
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+}
+
+.speaker button {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.speaker button:hover { border-color: var(--muted); }
+.speaker button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.speaker button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.speaker button.end { color: #ffb4a8; }
+
+.speaker-top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.speaker-top h1 {
+  flex: 1;
+  margin: 0;
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.followers::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.room strong {
+  letter-spacing: 0.08em;
+  font-size: 18px;
+}
+
+.speaker-current {
+  grid-area: current;
+  position: relative;
+  min-height: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+#current {
+  position: absolute;
+  inset: 0;
+}
+
+.speaker-side {
+  grid-area: side;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
+}
+
+.speaker-side h2 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.speaker-next .preview {
+  border-radius: 4px;
+  background: #fff;
+}
+
+.speaker-notes {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.notes-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notes-head h2 { flex: 1; margin: 0; }
+.notes-head button { padding: 2px 8px; font-size: 13px; }
+
+.notes {
+  flex: 1;
+  overflow: auto;
+  font-size: var(--notes-size, 22px);
+  line-height: 1.45;
+}
+
+.speaker .notes a { color: #8cb8ff; }
+.notes img { max-width: 100%; }
+.notes pre { white-space: pre-wrap; font-size: 0.8em; }
+.notes .no-notes { color: var(--muted); font-style: italic; }
+
+.speaker-bottom {
+  grid-area: bottom;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--panel);
+}
+
+.timer {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.timer .label {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.timer .big,
+.clock {
+  font-size: 30px;
+  font-weight: 300;
+  font-variant-numeric: tabular-nums;
+}
+
+#slide-time { font-size: 20px; font-variant-numeric: tabular-nums; }
+
+.remaining {
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+  background: #23402c;
+}
+
+.remaining[data-pace="behind"] { background: #5a4515; }
+.remaining[data-pace="over"] { background: #6b1f1f; }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.position {
+  min-width: 5em;
+  text-align: center;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.speaker-message {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  gap: 10px;
+  text-align: center;
+  background: var(--bg);
+  font-size: 20px;
+}
+
+.speaker-message[hidden] { display: none; }
+.speaker-message a { color: #8cb8ff; }
+
+#toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 80px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #2d3742;
+  color: var(--ink);
+}
+
+.toast-error { background: #9b1c1c; }
+
+@media (max-width: 800px) {
+  body.speaker {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(200px, 1fr) auto auto;
+    grid-template-areas: "top" "current" "side" "bottom";
+    overflow: auto;
+  }
+}

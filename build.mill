@@ -1,0 +1,65 @@
+//| mill-version: 1.3.1
+//| mill-jvm-version: system
+
+package build
+import mill.*, scalalib.*
+
+object `package` extends SbtModule {
+  def scalaVersion  = "3.10.0"
+  def scalacOptions = Seq("-deprecation", "-feature")
+
+  lazy val lmdbJavaOptions = Seq(
+    "--enable-native-access=ALL-UNNAMED",
+    "--add-opens",
+    "java.base/java.nio=ALL-UNNAMED",
+    "--add-opens",
+    "java.base/sun.nio.ch=ALL-UNNAMED",
+    // faster vector computations for Lucene
+    "--add-modules",
+    "jdk.incubator.vector"
+  )
+
+  private val zioVersion      = "2.1.27"
+  private val zioConfig       = "4.1.0"
+  private val zioLogging      = "2.5.3"
+  private val lmdbVersion     = "3.0.0-RC3"
+  private val luceneVersion   = "10.5.2"
+  private val jsoniterVersion = "2.41.6"
+
+  def mvnDeps = Seq(
+    mvn"dev.zio::zio:$zioVersion",
+    mvn"dev.zio::zio-streams:$zioVersion",
+    mvn"dev.zio::zio-http:3.11.6",
+    mvn"dev.zio::zio-logging:$zioLogging",
+    mvn"dev.zio::zio-logging-slf4j2-bridge:$zioLogging",
+    mvn"dev.zio::zio-config:$zioConfig",
+    mvn"dev.zio::zio-config-typesafe:$zioConfig",
+    mvn"dev.zio::zio-config-magnolia:$zioConfig",
+    mvn"fr.janalyse::zio-lmdb:$lmdbVersion",
+    mvn"fr.janalyse::zio-lmdb-vector:$lmdbVersion",
+    mvn"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-core:$jsoniterVersion",
+    mvn"com.github.plokhotnyuk.jsoniter-scala::jsoniter-scala-macros:$jsoniterVersion",
+    mvn"org.apache.lucene:lucene-core:$luceneVersion",
+    mvn"org.apache.lucene:lucene-analysis-common:$luceneVersion",
+    mvn"org.apache.lucene:lucene-queryparser:$luceneVersion",
+    mvn"org.eclipse.jgit:org.eclipse.jgit:7.8.0.202609011348-r",
+    mvn"org.apache.pdfbox:pdfbox:3.0.8",
+    mvn"org.jsoup:jsoup:1.23.2",
+    // the browser side libraries, served from the class path : the application works offline
+    mvn"org.webjars.npm:marked:18.0.14",
+    mvn"org.webjars.npm:highlightjs__cdn-assets:11.11.1",
+    // their minified bundles hold their dependencies
+    mvn"org.webjars.npm:katex:0.17.0".exclude("*" -> "*"),
+    mvn"org.webjars.npm:mermaid:11.17.2".exclude("*" -> "*"),
+    // only for the Source Sans Pro fonts the reveal.js themes import
+    mvn"org.webjars.npm:reveal.js:5.0.4"
+  )
+
+  def mainClass = Some("fr.janalyse.slides.Main")
+  def forkArgs  = Seq("-Xms128m", "-Xmx400m") ++ lmdbJavaOptions
+
+  object test extends SbtTests, TestModule.ZioTest {
+    def zioTestVersion = zioVersion
+    def forkArgs       = lmdbJavaOptions
+  }
+}

@@ -1,0 +1,595 @@
+/* The library : slides laid out on a light table, the years in the margin. */
+
+:root {
+  --table: #e9edf1;
+  --sheet: #ffffff;
+  --ink: #1c2430;
+  --slate: #5b6b7f;
+  --line: #d3dae2;
+  --accent: #ff6501;
+  --accent-ink: #b44400;
+  --focus: #1f5fbf;
+  --mark: #ffe08a;
+  --gutter: clamp(16px, 4vw, 48px);
+  --year-column: clamp(88px, 12vw, 180px);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --table: #141920;
+    --sheet: #1d242d;
+    --ink: #e6eaf0;
+    --slate: #9aa7b6;
+    --line: #2d3742;
+    --accent-ink: #ff8a3d;
+    --focus: #8cb8ff;
+    --mark: #6b4e00;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body.library {
+  margin: 0;
+  background: var(--table);
+  color: var(--ink);
+  font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+button,
+.live a {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--sheet);
+  cursor: pointer;
+}
+
+button:hover { border-color: var(--slate); }
+
+button.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-decoration: underline;
+}
+
+/* ==================================================================================================================
+ * Top bar
+ */
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px var(--gutter);
+  background: color-mix(in srgb, var(--table) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  width: calc(var(--year-column) - 20px);
+  text-decoration: none;
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.brand svg {
+  width: 30px;
+  height: 30px;
+  fill: var(--ink);
+}
+
+.brand svg .bar { fill: var(--accent); }
+
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 680px;
+}
+
+.search input {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--sheet);
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+}
+
+.search input:focus {
+  outline: none;
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 25%, transparent);
+}
+
+.search kbd {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--slate);
+  font: inherit;
+  font-size: 14px;
+}
+
+.search input:focus + kbd { display: none; }
+
+.top-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sync {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--slate);
+}
+
+.sync .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2da44e;
+}
+
+.sync.offline .dot { background: #cf222e; }
+
+/* ==================================================================================================================
+ * Live talks and sources
+ */
+
+.live {
+  margin: 20px var(--gutter) 0 calc(var(--gutter) + var(--year-column));
+  padding: 14px 18px;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--sheet);
+}
+
+.live h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+.live ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.live li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+.live-title { font-weight: 600; font-size: 19px; }
+.live-meta { color: var(--slate); }
+.live-code { letter-spacing: 0.08em; color: var(--slate); }
+
+.live a {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--sheet);
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.live a.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 20px var(--gutter) 0 calc(var(--gutter) + var(--year-column));
+}
+
+.sources button[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--table);
+}
+
+/* ==================================================================================================================
+ * Years and slides
+ */
+
+.years {
+  padding: 8px var(--gutter) 80px;
+}
+
+.year {
+  display: grid;
+  grid-template-columns: var(--year-column) minmax(0, 1fr);
+  align-items: start;
+  padding-top: 28px;
+}
+
+.year + .year { border-top: 1px solid var(--line); margin-top: 28px; }
+
+.year-mark {
+  position: sticky;
+  top: 84px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: 300;
+}
+
+.year-number {
+  font-size: clamp(40px, 6.5vw, 84px);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.year-count {
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--slate);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 30px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* a slide mount : the slide, its proportions, a thin frame */
+.mount {
+  position: relative;
+  display: block;
+  aspect-ratio: var(--slide-ratio, 960 / 700);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: #fff;
+}
+
+.mount img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mount iframe {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 0;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transform: scale(var(--frame-scale, 0.27));
+}
+
+.mount:hover,
+.mount:focus-visible {
+  border-color: var(--ink);
+}
+
+.card-body {
+  padding-top: 10px;
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.card h3 a { text-decoration: none; }
+.card h3 a:hover { text-decoration: underline; }
+
+.subtitle {
+  margin: 2px 0 0;
+  color: var(--slate);
+  /* long descriptions : three lines, the whole text as a tooltip */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 6px 0 0;
+  color: var(--slate);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.meta .path {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 6px 0 0;
+  font-size: 15px;
+}
+
+.chapters span { color: var(--slate); }
+
+.empty {
+  max-width: 36em;
+  margin: 80px auto;
+  font-size: 19px;
+  text-align: center;
+}
+
+/* ==================================================================================================================
+ * Search results
+ */
+
+.results {
+  max-width: 1100px;
+  padding: 8px var(--gutter) 80px calc(var(--gutter) + var(--year-column));
+}
+
+.results-summary {
+  margin: 24px 0 18px;
+  color: var(--slate);
+}
+
+.result {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 22px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+}
+
+.result h3 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.result h3 a { text-decoration: none; }
+
+.hits {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hits a {
+  display: grid;
+  grid-template-columns: 3em minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.hits a:hover,
+.hits a:focus-visible {
+  background: var(--sheet);
+}
+
+.hit-number {
+  color: var(--slate);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.hit-title {
+  display: block;
+  font-weight: 600;
+}
+
+.hit-snippet {
+  display: block;
+  color: var(--slate);
+  font-size: 15px;
+}
+
+.hit-via {
+  align-self: start;
+  padding: 1px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  color: var(--slate);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+mark {
+  background: var(--mark);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* ==================================================================================================================
+ * Dialogs and messages
+ */
+
+dialog.panel {
+  width: min(560px, calc(100vw - 32px));
+  padding: 24px 28px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--sheet);
+  color: var(--ink);
+}
+
+dialog.panel::backdrop { background: rgba(10, 14, 20, 0.45); }
+
+dialog.panel h2 {
+  margin: 0 0 16px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+dialog.panel label {
+  display: block;
+  margin: 14px 0 6px;
+  font-weight: 600;
+}
+
+dialog.panel select,
+dialog.panel input,
+dialog.panel textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--table);
+  color: var(--ink);
+  font: inherit;
+}
+
+dialog.panel textarea {
+  font-family: ui-monospace, "Source Code Pro", Menlo, monospace;
+  font-size: 14px;
+}
+
+#join-code {
+  font-size: 26px;
+  letter-spacing: 0.1em;
+}
+
+.hint {
+  margin: 6px 0 0;
+  color: var(--slate);
+  font-size: 15px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.dialog-actions .primary {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--table);
+  font-weight: 600;
+}
+
+#status-details {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 18px;
+  margin: 0;
+}
+
+#status-details dt { color: var(--slate); }
+#status-details dd { margin: 0; overflow-wrap: anywhere; }
+
+#toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  max-width: 28em;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: var(--table);
+}
+
+.toast-error { background: #9b1c1c; color: #fff; }
+
+/* ==================================================================================================================
+ * Narrow screens : the years above their slides
+ */
+
+@media (max-width: 760px) {
+  .top { flex-wrap: wrap; gap: 10px; }
+  .brand { width: auto; }
+  .search { order: 3; flex-basis: 100%; max-width: none; }
+  .top-actions button { padding: 5px 9px; font-size: 15px; }
+  #look-button { display: none; }
+  .year { grid-template-columns: 1fr; }
+  .year-mark { position: static; flex-direction: row; align-items: baseline; gap: 12px; margin-bottom: 14px; }
+  .live, .sources, .results { margin-left: var(--gutter); padding-left: 0; }
+  .live { padding-left: 14px; }
+  .results { padding-left: var(--gutter); }
+  .result { grid-template-columns: 1fr; }
+  .result-mount { max-width: 320px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}

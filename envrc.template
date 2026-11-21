@@ -1,0 +1,47 @@
+# Personal environment for markdown-slides, for direnv :
+#   cp envrc.template .envrc.local && direnv allow
+# (.envrc loads the flake, then .envrc.local, which is never committed)
+# Every variable is optional, the commented values are the defaults (see src/main/resources/application.conf).
+# The theme is only the default one : once another is chosen from the user interface, it is stored in the database.
+
+## ---------------------------------------------------------------------------------------------------------------------
+## Network : only the loopback interface by default, "0.0.0.0" for participants to follow from their own devices
+
+#export MARKDOWN_SLIDES_LISTEN_HOST="127.0.0.1"
+#export MARKDOWN_SLIDES_LISTEN_PORT="8048"
+
+## ---------------------------------------------------------------------------------------------------------------------
+## Storage : database (LMDB), thumbnails and PDF exports
+
+#export MARKDOWN_SLIDES_DATA_DIRECTORY="$HOME/.markdown-slides"
+
+## ---------------------------------------------------------------------------------------------------------------------
+## Presentations directories (git working trees or plain directories), comma separated
+
+#export MARKDOWN_SLIDES_SOURCES="$HOME/slides"
+## Never scanned, glob patterns relative to a source directory, comma separated
+#export MARKDOWN_SLIDES_EXCLUDES="**/node_modules/**,**/target/**,**/.direnv/**,**/.idea/**"
+#export MARKDOWN_SLIDES_SCAN_INTERVAL_SECONDS="2"
+
+## ---------------------------------------------------------------------------------------------------------------------
+## Look and feel : reveal.js themes (css files), comma separated
+
+#export MARKDOWN_SLIDES_THEME_DIRECTORIES=""
+#export MARKDOWN_SLIDES_DEFAULT_THEME="orange-white"
+
+## ---------------------------------------------------------------------------------------------------------------------
+## Thumbnails and PDF exports : the headless browser, chromium from the flake on Linux, else google-chrome
+
+#export MARKDOWN_SLIDES_BROWSER="chromium"
+#export MARKDOWN_SLIDES_PDF_AUTHOR=""
+
+## ---------------------------------------------------------------------------------------------------------------------
+## Search by meaning : any OpenAI compatible embeddings server (LocalAI, llama.cpp, vLLM, Ollama...)
+
+#export MARKDOWN_SLIDES_EMBEDDINGS_BASE_URL="http://127.0.0.1:8081"
+## Empty : search by words only
+#export MARKDOWN_SLIDES_EMBEDDINGS_MODEL="qwen3-embedding-0.6b"
+#export MARKDOWN_SLIDES_EMBEDDINGS_API_KEY=""
+## Basic authentication, used instead of the API key when a username is given
+#export MARKDOWN_SLIDES_EMBEDDINGS_USERNAME=""
+#export MARKDOWN_SLIDES_EMBEDDINGS_PASSWORD=""

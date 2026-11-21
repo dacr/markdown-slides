@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slides</title>
+  <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/webjars/highlightjs__cdn-assets/11.11.1/styles/base16/zenburn.min.css">
+  <link rel="stylesheet" href="/assets/deck.css">
+  <link rel="stylesheet" href="/assets/player.css">
+  <script src="/webjars/marked/18.0.14/lib/marked.umd.js"></script>
+  <script src="/webjars/highlightjs__cdn-assets/11.11.1/highlight.min.js"></script>
+  <script type="module" src="/assets/player.js"></script>
+</head>
+<body class="player">
+  <main id="deck" aria-live="polite"></main>
+
+  <nav id="player-bar" aria-label="Presentation">
+    <a id="bar-back" href="/" title="All presentations">Library</a>
+    <button id="bar-overview" title="All slides (Esc)">Overview</button>
+    <button id="bar-speaker" title="Speaker view with notes and timer (S)">Speaker view</button>
+    <button id="bar-live" title="Let participants follow on their devices (G)">Go live</button>
+    <button id="bar-pdf" title="Download as PDF">PDF</button>
+    <button id="bar-fullscreen" title="Full screen (F)">Full screen</button>
+    <button id="bar-help" title="Keyboard shortcuts (?)">Keys</button>
+  </nav>
+
+  <div id="live-banner" hidden></div>
+
+  <div id="missing" class="player-message" hidden>
+    <p>This presentation is not available : it may have been moved, or its live session ended.</p>
+    <a href="/">Open the library</a>
+  </div>
+
+  <div id="help" class="help-overlay" hidden>
+    <div class="help-card" role="dialog" aria-label="Keyboard shortcuts">
+      <h2>Keyboard shortcuts</h2>
+      <dl>
+        <dt>→ ← or L H</dt><dd>Next and previous slide</dd>
+        <dt>↓ ↑ or J K</dt><dd>Slide below and above</dd>
+        <dt>Space, Page down, N</dt><dd>Next step, fragments included</dd>
+        <dt>Shift space, Page up, P</dt><dd>Previous step</dd>
+        <dt>Home, End</dt><dd>First and last slide</dd>
+        <dt>Esc or O</dt><dd>Overview of all slides</dd>
+        <dt>S</dt><dd>Speaker view : notes, next slide, timer</dd>
+        <dt>G</dt><dd>Go live : participants follow you</dd>
+        <dt>B or .</dt><dd>Black screen</dd>
+        <dt>F</dt><dd>Full screen</dd>
+        <dt>Alt or Ctrl click</dt><dd>Zoom in, click again to zoom out</dd>
+      </dl>
+      <p>Click anywhere to close.</p>
+    </div>
+  </div>
+
+  <dialog id="share" class="share-dialog">
+    <h2>Participants can follow live</h2>
+    <p>Open one of these addresses on a phone or laptop, or type the code in the library.</p>
+    <ul class="share-urls"></ul>
+    <p class="share-code-line">Code <strong class="share-code"></strong></p>
+    <p class="share-local" hidden>This application only listens on this computer : start it with <code>MARKDOWN_SLIDES_LISTEN_HOST=0.0.0.0</code> so that other devices can join.</p>
+    <button class="share-close">Close</button>
+  </dialog>
+</body>
+</html>

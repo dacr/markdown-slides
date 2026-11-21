@@ -1,0 +1,33 @@
+html, body.print {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.print-page {
+  position: relative;
+  overflow: hidden;
+  break-after: page;
+  page-break-after: always;
+}
+
+.print-page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.print-page .reveal {
+  position: absolute;
+  inset: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.print-page .reveal .slides {
+  left: 0;
+  top: 0;
+}
+
+.print .reveal .fragment {
+  transition: none;
+}

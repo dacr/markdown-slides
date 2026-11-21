@@ -1,0 +1,275 @@
+/* The player chrome : kept out of the slides' way, legible over any theme. */
+
+html, body.player {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body.player {
+  --chrome-bg: rgba(20, 25, 32, 0.88);
+  --chrome-ink: #eef1f5;
+  --chrome-accent: #ff6501;
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+}
+
+body.player main {
+  position: fixed;
+  inset: 0;
+}
+
+#deck.zoomed .slides {
+  transition: transform 0.3s ease;
+}
+
+#deck.zoomed .reveal {
+  transform: scale(2);
+  transform-origin: var(--zoom-x) var(--zoom-y);
+  transition: transform 0.3s ease;
+}
+
+#player-bar {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  z-index: 200;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--chrome-bg);
+  transform: translate(-50%, -140%);
+  transition: transform 0.2s ease;
+}
+
+#player-bar.shown,
+#player-bar:focus-within {
+  transform: translate(-50%, 0);
+}
+
+#player-bar a,
+#player-bar button,
+#live-banner button,
+.share-dialog button {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--chrome-ink);
+  font: inherit;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#player-bar a:hover,
+#player-bar button:hover,
+#live-banner button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+#player-bar :focus-visible,
+#live-banner :focus-visible,
+.share-dialog :focus-visible,
+.overview-slide:focus-visible {
+  outline: 2px solid var(--chrome-accent);
+  outline-offset: 2px;
+}
+
+#player-bar button[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+#live-banner {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 8px;
+  background: var(--chrome-bg);
+  color: var(--chrome-ink);
+  font-size: 15px;
+}
+
+#live-banner[hidden] { display: none; }
+
+#live-banner span::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--chrome-accent);
+  vertical-align: 1px;
+}
+
+.player-message {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  text-align: center;
+  font-size: 20px;
+  background: #e9edf1;
+  color: #1c2430;
+}
+
+.player-message[hidden] { display: none; }
+
+.help-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 14, 20, 0.55);
+}
+
+.help-overlay[hidden] { display: none; }
+
+.help-card {
+  max-width: 34em;
+  padding: 24px 32px;
+  border-radius: 10px;
+  background: #fff;
+  color: #1c2430;
+  font-size: 17px;
+}
+
+.help-card h2 {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.help-card dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 20px;
+  margin: 0;
+}
+
+.help-card dt {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.help-card dd { margin: 0; }
+
+.help-card p {
+  margin: 16px 0 0;
+  color: #5b6b7f;
+}
+
+.share-dialog {
+  max-width: 36em;
+  padding: 24px 28px;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  color: #1c2430;
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+}
+
+.share-dialog::backdrop { background: rgba(10, 14, 20, 0.55); }
+
+.share-dialog h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.share-dialog ul {
+  padding-left: 1.2em;
+  font-size: 19px;
+}
+
+.share-dialog a { color: #1f5fbf; }
+
+.share-code {
+  font-size: 26px;
+  letter-spacing: 0.08em;
+}
+
+.share-dialog button {
+  background: #1c2430;
+}
+
+/* overview */
+.deck-overview {
+  position: absolute;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  gap: 18px;
+  padding: 28px;
+  overflow: auto;
+  background: rgba(20, 25, 32, 0.94);
+}
+
+.overview-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 0 0 240px;
+}
+
+.overview-slide {
+  position: relative;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.overview-slide.current { border-color: var(--chrome-accent); }
+
+.overview-slide > div { width: 100%; }
+
+.overview-slide span {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--chrome-bg);
+  color: var(--chrome-ink);
+  font-size: 12px;
+}
+
+#toasts {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+}
+
+.toast {
+  max-width: 28em;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #1c2430;
+  color: #eef1f5;
+  font-size: 15px;
+}
+
+.toast-error { background: #9b1c1c; }
+
+@media (prefers-reduced-motion: reduce) {
+  #player-bar, .reveal .fragment, .reveal .progress span, #deck.zoomed .reveal { transition: none; }
+}

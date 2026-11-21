@@ -1,0 +1,11 @@
+.idea/
+out/
+.bsp/
+.metals/
+.bloop/
+.vscode/
+.direnv/
+.envrc.local
+
+# personal notes, kept out of the repository
+docs/spec.md
