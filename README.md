@@ -5,9 +5,12 @@ A local web application for presentations written in markdown, compatible with
 with its thumbnail, searches them by words and by meaning, plays them with a reveal.js like player and speaker view,
 exports them as PDF, and lets participants follow a talk live from their own devices.
 
+![The library](examples/2026-10-29-markdown-slides/captures/library.png)
+
 ## Running
 
 ```bash
+make run-examples # on the sample presentation (examples/), then browse http://127.0.0.1:8048/
 make run          # from the sources, then browse http://127.0.0.1:8048/
 make run-jar      # from the standalone jar : the build stays usable meanwhile (make test...)
 make run-shared   # listening on every network interface, for participants to follow from their devices
@@ -57,6 +60,9 @@ Every setting of [application.conf](src/main/resources/application.conf) can be 
 
 ## Presentations
 
+The [sample presentation](examples/2026-10-29-markdown-slides/index.md) shows every feature below : run it with
+`make run-examples`, or see it [online](https://erahs.code-examples.org/p/01a1fed5-da45-7429-98b3-e2237da40deb#/0).
+
 As with reveal-md, each markdown file is a deck ; the decks of a directory make a presentation, its `index.md` first,
 the others listed with it. A presentation is dated by its directory name (`2024-02-reveals-md`), the `date:` of its
 front matter, or its first commit.
@@ -98,7 +104,7 @@ holding `### Quick setup`, `### links`. Frames, pictures and videos given a `dat
   presenter ; they can browse on their own and come back. Listen on every interface (`make run-shared`) for other
   devices to join.
 - **PDF** : printed on demand by the headless browser, every fragment shown, with the slides as bookmarks.
-- **Look and feel** : the theme, and custom CSS applied over it.
+- **Look and feel** : the theme (built-in : `white`, `black`, `orange-white`, `orange-black`), and custom CSS applied over it.
 
 Saving a markdown file, a picture or a theme updates the open views within seconds : the library, the slides, the
 speaker view and the participants' screens.

@@ -49,7 +49,7 @@ class Themes(config: AppConfig) {
 }
 
 object Themes {
-  val builtins: List[String] = List("white", "black")
+  val builtins: List[String] = List("white", "black", "orange-white", "orange-black")
 
   val layer: ZLayer[AppConfig, Nothing, Themes] = ZLayer.derive[Themes]
 }

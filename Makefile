@@ -6,7 +6,7 @@ JAR      := out/assembly.dest/out.jar
 JVM_OPTS := -Xms128m -Xmx2g --enable-native-access=ALL-UNNAMED --add-modules jdk.incubator.vector \
             --add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/sun.nio.ch=ALL-UNNAMED
 
-.PHONY: all help compile test run run-shared jar run-jar open format clean status check-mill
+.PHONY: all help compile test run run-examples run-shared jar run-jar open format clean status check-mill
 
 all: test
 
@@ -24,6 +24,10 @@ test:
 # run                : start the application from the sources, then browse http://127.0.0.1:8048
 run:
 	mill --no-server run
+
+# run-examples       : start it on the sample presentation (examples/), with its own data (out/examples-data)
+run-examples:
+	MARKDOWN_SLIDES_SOURCES=$(CURDIR)/examples MARKDOWN_SLIDES_DATA_DIRECTORY=$(CURDIR)/out/examples-data mill --no-server run
 
 # run-shared         : start it for participants to follow from their own devices (every network interface)
 run-shared:
