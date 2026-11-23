@@ -14,7 +14,7 @@ import scala.util.matching.Regex
 object DeckParser {
 
   /** Bumped when the parsing changes : the decks are read again. */
-  val Version = 2
+  val Version = 3
 
   /** @param stacks the slides, by horizontal position then vertical position */
   case class Parsed(frontMatter: Map[String, String], stacks: List[List[Slide]], title: String, subtitle: String) {
@@ -207,7 +207,7 @@ object DeckParser {
           else if (line.trim.matches("""^(`{3,}|~{3,})$""")) ""
           else line.trim
         }
-        else clean(line.replaceAll("""^\s{0,3}#{1,6}\s+""", "").replaceAll("""^\s*([-*+]|\d+[.)])\s+(\[[ xX]\]\s+)?""", "").replaceAll("""^\s*>\s?""", ""))
+        else clean(line.replaceAll("""^\s{0,3}#{1,6}\s+""", "").replaceAll("""^\s*([-*+]|\d+[.)])\s+(\[[ xX/]\]\s+)?""", "").replaceAll("""^\s*>\s?""", ""))
       if (text.nonEmpty) out.append(text).append('\n')
     }
     out.toString.trim

@@ -387,14 +387,44 @@
 .reveal blockquote.callout-warning { border-color: #d29922; background: rgba(210, 153, 34, 0.1); }
 .reveal blockquote.callout-caution { border-color: #cf222e; background: rgba(207, 34, 46, 0.08); }
 
-.reveal input[type="checkbox"] {
-  width: 0.8em;
-  height: 0.8em;
-  margin-right: 0.3em;
+.reveal li.task-list-item {
+  list-style: none;
 }
 
-.reveal li:has(> input[type="checkbox"]) {
-  list-style: none;
+/* task boxes, drawn in the text color : to do, done, in progress (Obsidian's [/]) ; in place of the bullet, the
+   following lines aligned with the text */
+.reveal .task-box {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0 0.35em 0 -1.15em;
+  vertical-align: -0.08em;
+  border: 0.08em solid currentColor;
+  border-radius: 0.15em;
+}
+
+.reveal .task-box.task-done::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  width: 0.2em;
+  height: 0.4em;
+  border: solid currentColor;
+  border-width: 0 0.1em 0.1em 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.reveal .task-box.task-in-progress::after {
+  content: '';
+  position: absolute;
+  top: 0.1em;
+  bottom: 0.1em;
+  left: 0.1em;
+  right: 50%;
+  background: currentColor;
 }
 
 /* a slide drawn small and still */

@@ -86,6 +86,7 @@ Markdown extensions :
 | ` ```terminal title `                        | a terminal window, `$ ` and `# ` prompts highlighted        |
 | `> [!NOTE]`, `[!TIP]`, `[!WARNING]`...       | callouts                                                    |
 | `==marked==`, `:rocket:`, tables, task lists | marked text, emojis, GFM                                    |
+| `- [ ]`, `- [x]`, `- [/]`                    | task lists, to do, done, in progress (as Obsidian)          |
 
 Links to other decks (`[intro](introduction.md)`) open them in the player ; pictures are resolved against the deck
 directory. As with reveal-md, headings are anchors : `[setup](#quick-setup)`, `[links](other.md#links)` open the slide

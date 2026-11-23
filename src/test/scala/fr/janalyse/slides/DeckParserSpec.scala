@@ -81,6 +81,10 @@ object DeckParserSpec extends ZIOSpecDefault {
         !slide.markdown.contains("real")
       )
     },
+    test("leaves the task markers out of the searched text, Obsidian's in progress one too") {
+      val slide = DeckParser.parse("- [ ] todo\n- [x] done\n- [/] doing\n", "talk.md").slides.head
+      assertTrue(slide.text == "todo\ndone\ndoing")
+    },
     test("reads the front matter, flattening nested values") {
       val parsed = DeckParser.parse(
         """---

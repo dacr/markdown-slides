@@ -5,7 +5,7 @@
 //  - svg : ```svg, or inline <svg> html
 //  - terminal sessions : ```terminal (or console, shell-session), prompts `$ ` and `# ` highlighted
 //  - callouts : > [!NOTE], [!TIP], [!WARNING], [!IMPORTANT], [!CAUTION]
-//  - ==marked text==, :emoji: shortcodes, GFM tables and task lists
+//  - ==marked text==, :emoji: shortcodes, GFM tables and task lists (Obsidian's `- [/]` in progress too)
 //  - reveal attributes : <!-- .element: class="fragment" --> after an element
 // Relative pictures and links are resolved against the deck directory ; links to other decks open them in the player.
 
@@ -252,6 +252,43 @@ function callouts(root) {
   });
 }
 
+/** Task lists : GitHub's `- [ ]` and `- [x]`, and Obsidian's `- [/]` in progress, as boxes drawn in the text color. */
+const TASK_LABELS = { todo: 'To do', done: 'Done', 'in-progress': 'In progress' };
+const TASK_LABEL = state => TASK_LABELS[state];
+
+function taskBox(state) {
+  const box = document.createElement('span');
+  box.className = `task-box task-${state}`;
+  box.setAttribute('role', 'img');
+  box.setAttribute('aria-label', TASK_LABEL(state));
+  return box;
+}
+
+function tasks(root) {
+  root.querySelectorAll('li').forEach(li => {
+    // the first content of the item, or of its first paragraph (loose lists)
+    let holder = li;
+    let first = li.firstChild;
+    while (first && first.nodeType === Node.TEXT_NODE && !first.nodeValue.trim()) first = first.nextSibling;
+    if (first?.nodeType === Node.ELEMENT_NODE && first.tagName === 'P') { holder = first; first = first.firstChild; }
+    let state = null;
+    if (first?.nodeType === Node.ELEMENT_NODE && first.matches('input[type="checkbox"]')) {
+      state = first.hasAttribute('checked') ? 'done' : 'todo';
+      const next = first.nextSibling;
+      first.remove();
+      if (next?.nodeType === Node.TEXT_NODE) next.nodeValue = next.nodeValue.replace(/^\s+/, '');
+      holder.insertBefore(taskBox(state), next);
+    } else if (first?.nodeType === Node.TEXT_NODE) {
+      const m = /^\s*\[\/\](\s+|$)/.exec(first.nodeValue);
+      if (!m) return;
+      state = 'in-progress';
+      first.nodeValue = first.nodeValue.slice(m[0].length);
+      holder.insertBefore(taskBox(state), first);
+    }
+    if (state) li.classList.add('task-list-item', `task-${state}`);
+  });
+}
+
 /** reveal-md anchors : `## My Title` is reached by `#my-title`. Not ids, which the player and the themes use. */
 export function anchorOf(text) {
   return text.trim().toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s+/g, '-');
@@ -304,6 +341,7 @@ export function renderInto(element, markdown, context) {
   element.innerHTML = toHtml(markdown);
   elementAttributes(element);
   callouts(element);
+  tasks(element);
   resolveUrls(element, context);
   anchors(element);
   element.querySelectorAll('table').forEach(table => {
