@@ -333,6 +333,26 @@ below the second slide
   - second
     - third
 
+----
+
+### columns with more text :sparkles:
+
+```markdown
+- long items now wrap within their own column, the next one stays beside it
+  - details too, aligned at the top
+* the bullet changes from `-` to `*`
+  - and to `+` for a third column
+```
+
+----
+
+### columns with more text rendering
+
+- long items now wrap within their own column, the next one stays beside it
+  - details too, aligned at the top
+* the bullet changes from `-` to `*`
+  - and to `+` for a third column
+
 ---
 
 ### two columns
@@ -499,6 +519,38 @@ object Main extends ZIOAppDefault {
   def run =
     Console.printLine("Hello world")
 }
+```
+
+---
+
+### languages :sparkles:
+
+- the 192 languages of [highlight.js](https://highlightjs.org/) : `scala`, `nix`, `rust`, `go`, `typescript`...
+  + the rarer ones loaded only when a code block names them
+  + their aliases too : `nixos`, `hs`, `docker`...
+- unknown ones are shown as plain text
+
+----
+
+### languages rendering
+
+```nix
+{ pkgs, ... }: {
+  services.nginx.enable = true; # a web server
+  environment.systemPackages = [ pkgs.git ];
+}
+```
+
+```go
+func main() { fmt.Println("hello") } // go
+```
+
+```rust
+fn main() { let answer: u32 = 42; println!("{answer}"); }
+```
+
+```typescript
+const greet = (name: string): string => `hello ${name}`;
 ```
 
 ---
@@ -838,8 +890,11 @@ Pictures, videos and frames too :
 ```markdown
 - [ ] not done
 - [x] done
+- [/] in progress, as in Obsidian
 - [ ] once again something todo
 ```
+
+- `[/]` in progress :sparkles:
 
 ----
 
@@ -847,6 +902,7 @@ Pictures, videos and frames too :
 
 - [ ] not done
 - [x] done
+- [/] in progress, as in Obsidian
 - [ ] once again something todo
 
 ---
