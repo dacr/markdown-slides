@@ -391,6 +391,17 @@
   list-style: none;
 }
 
+/* lists following one another (the bullet changed, `-` then `*`) : columns side by side, long items wrapping within */
+.reveal .slides section > :is(ul, ol):has(+ :is(ul, ol)),
+.reveal .slides section > :is(ul, ol) + :is(ul, ol) {
+  max-width: calc(50% - 1.5em); /* the theme gives the lists a 1em margin */
+  vertical-align: top;
+}
+
+.reveal .slides section:has(> :is(ul, ol) + :is(ul, ol) + :is(ul, ol)) > :is(ul, ol) {
+  max-width: calc(100% / 3 - 1.5em);
+}
+
 /* task boxes, drawn in the text color : to do, done, in progress (Obsidian's [/]) ; in place of the bullet, the
    following lines aligned with the text */
 .reveal .task-box {
