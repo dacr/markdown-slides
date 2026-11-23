@@ -8,12 +8,13 @@ import scala.util.matching.Regex
 /** Reads a reveal-md compatible markdown deck : its front matter, then its slides, separated by `---` lines (the next slide) and `----` lines (the next slide down, vertical
   * stacks). Unlike reveal-md, separators within fenced code blocks are left alone.
   *
-  * Within a slide, a `Note:` line starts the speaker notes, and a `<!-- .slide: ... -->` comment gives the attributes of the slide.
+  * Within a slide, a `Note:` line starts the speaker notes, and a `<!-- .slide: ... -->` comment gives the attributes of the slide (not within a code block, where it
+  * is shown as written).
   */
 object DeckParser {
 
   /** Bumped when the parsing changes : the decks are read again. */
-  val Version = 1
+  val Version = 2
 
   /** @param stacks the slides, by horizontal position then vertical position */
   case class Parsed(frontMatter: Map[String, String], stacks: List[List[Slide]], title: String, subtitle: String) {
@@ -128,9 +129,22 @@ object DeckParser {
     stacks.toList
   }
 
+  /** The `<!-- .slide: ... -->` attributes of a slide, and the slide without them; those of its code blocks are left as written. */
+  private def slideAttributes(raw: String): (String, String) = {
+    // runs of lines, outside or within code blocks : a comment may span several lines
+    val runs = scala.collection.mutable.ListBuffer.empty[(Boolean, scala.collection.mutable.ListBuffer[String])]
+    withFences(raw.split("\n", -1)) { (line, outside) =>
+      if (runs.isEmpty || runs.last._1 != outside) runs += ((outside, scala.collection.mutable.ListBuffer(line)))
+      else runs.last._2 += line
+    }
+    val texts      = runs.toList.map((outside, lines) => (outside, lines.mkString("\n")))
+    val attributes = texts.collect { case (true, text) => SlideAttribute.findAllMatchIn(text).map(_.group(1).trim) }.flatten.mkString(" ")
+    val cleaned    = texts.map((outside, text) => if (outside) SlideAttribute.replaceAllIn(text, "") else text).mkString("\n")
+    (attributes, cleaned)
+  }
+
   private def slide(h: Int, v: Int, raw: String, notesSeparator: Option[Regex]): Slide = {
-    val attributes = SlideAttribute.findAllMatchIn(raw).map(_.group(1).trim).mkString(" ")
-    val withoutAttributes = SlideAttribute.replaceAllIn(raw, "")
+    val (attributes, withoutAttributes) = slideAttributes(raw)
     // the speaker notes : from the first "Note:" line outside of the code blocks
     val lines      = withoutAttributes.split("\n", -1).toVector
     var notesAt    = -1

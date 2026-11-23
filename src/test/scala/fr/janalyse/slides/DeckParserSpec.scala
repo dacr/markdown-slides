@@ -62,6 +62,25 @@ object DeckParserSpec extends ZIOSpecDefault {
         slide.text == "Some link text"
       )
     },
+    test("leaves the slide attributes of the code blocks as written") {
+      val slide = DeckParser.parse(
+        """### Backgrounds
+          |
+          |```markdown
+          |<!-- .slide: data-background="#1c2430" -->
+          |```
+          |
+          |<!-- .slide:
+          |  class="real" -->
+          |""".stripMargin,
+        "talk.md"
+      ).slides.head
+      assertTrue(
+        slide.attributes == """class="real"""",
+        slide.markdown.contains("""<!-- .slide: data-background="#1c2430" -->"""),
+        !slide.markdown.contains("real")
+      )
+    },
     test("reads the front matter, flattening nested values") {
       val parsed = DeckParser.parse(
         """---
