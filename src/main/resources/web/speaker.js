@@ -99,7 +99,8 @@ function onChange(state, origin) {
 async function load() {
   data = await api(`/api/deck?id=${encodeURIComponent(deckId)}`);
   if (data.theme !== themeName) { themeName = data.theme; await useTheme(themeName); }
-  await prepare(data.slides.map(s => s.markdown));
+  // the notes too : their code blocks may name a language to load
+  await prepare(data.slides.flatMap(s => [s.markdown, s.notes || '']));
   document.title = `Speaker · ${data.deck.title}`;
   elements.title.textContent = data.deck.title;
   if (!deck) deck = new Deck(elements.current, { width: config.slideWidth, height: config.slideHeight, mode: 'play', controls: false, progress: false, slideNumber: false, onChange });

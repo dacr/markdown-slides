@@ -1,5 +1,5 @@
 // Markdown of a slide to HTML, reveal-md compatible, with extensions :
-//  - code highlighting (highlight.js), with highlighted lines : ```scala [2-4]
+//  - code highlighting (highlight.js, its rarer languages loaded on demand), with highlighted lines : ```scala [2-4]
 //  - mermaid diagrams : ```mermaid
 //  - maths (KaTeX) : $inline$, $$display$$, ```math
 //  - svg : ```svg, or inline <svg> html
@@ -47,7 +47,74 @@ export async function prepare(markdowns) {
   const all = markdowns.join('\n');
   const wanted = [];
   if (/\$\$|\$[^\s$][^$\n]*\$|```\s*(math|latex|katex|tex)\b/.test(all)) wanted.push(ensureLibrary('katex').catch(() => null));
+  wanted.push(ensureLanguages(all));
   await Promise.all(wanted);
+}
+
+/**
+ * The languages of the code blocks : highlight.js common ones are always there (rust, typescript, java, go, python...),
+ * the others (scala, nix, haskell, dockerfile...) are loaded on demand, one small file each.
+ */
+const LANGUAGES = '/webjars/highlightjs__cdn-assets/11.11.1/languages/';
+/** The grammars to load, those of highlight.js 11.11.1 not in its common bundle */
+const GRAMMARS = new Set(`
+  1c abnf accesslog actionscript ada angelscript apache applescript arcade arduino armasm asciidoc aspectj autohotkey
+  autoit avrasm awk axapta basic bnf brainfuck cal capnproto ceylon clean clojure clojure-repl cmake coffeescript coq
+  cos crmsh crystal csp d dart delphi django dns dockerfile dos dsconfig dts dust ebnf elixir elm erb erlang
+  erlang-repl excel fix flix fortran fsharp gams gauss gcode gherkin glsl gml golo gradle groovy haml handlebars
+  haskell haxe hsp http hy inform7 irpf90 isbl jboss-cli julia julia-repl lasso latex ldif leaf lisp livecodeserver
+  livescript llvm lsl mathematica matlab maxima mel mercury mipsasm mizar mojolicious monkey moonscript n1ql
+  nestedtext nginx nim nix node-repl nsis ocaml openscad oxygene parser3 pf pgsql pony powershell processing profile
+  prolog properties protobuf puppet purebasic q qml reasonml rib roboconf routeros rsl ruleslanguage sas scala scheme
+  scilab smali smalltalk sml sqf stan stata step21 stylus subunit taggerscript tap tcl thrift tp twig vala vbscript
+  vbscript-html verilog vhdl vim wren x86asm xl xquery zephir
+`.trim().split(/\s+/));
+/** The names of the languages not matching their file, the aliases of highlight.js 11.11.1 grammars */
+const LANGUAGE_FILES = {
+  as: 'actionscript', asc: 'angelscript', apacheconf: 'apache', osascript: 'applescript', ino: 'arduino',
+  arm: 'armasm', adoc: 'asciidoc', ahk: 'autohotkey', 'x++': 'axapta', bf: 'brainfuck', capnp: 'capnproto',
+  icl: 'clean', dcl: 'clean', clj: 'clojure', edn: 'clojure', 'cmake.in': 'cmake', coffee: 'coffeescript',
+  cson: 'coffeescript', iced: 'coffeescript', cls: 'cos', crm: 'crmsh', pcmk: 'crmsh', cr: 'crystal', dpr: 'delphi',
+  dfm: 'delphi', pas: 'delphi', pascal: 'delphi', jinja: 'django', bind: 'dns', zone: 'dns', docker: 'dockerfile',
+  bat: 'dos', cmd: 'dos', dst: 'dust', ex: 'elixir', exs: 'elixir', erl: 'erlang', xlsx: 'excel', xls: 'excel',
+  f90: 'fortran', f95: 'fortran', fs: 'fsharp', 'f#': 'fsharp', gms: 'gams', gss: 'gauss', nc: 'gcode',
+  feature: 'gherkin', hbs: 'handlebars', 'html.hbs': 'handlebars', 'html.handlebars': 'handlebars',
+  htmlbars: 'handlebars', hs: 'haskell', hx: 'haxe', https: 'http', hylang: 'hy', i7: 'inform7',
+  'wildfly-cli': 'jboss-cli', jldoctest: 'julia-repl', ls: 'livescript', lassoscript: 'lasso', tex: 'latex',
+  mma: 'mathematica', wl: 'mathematica', m: 'mercury', moo: 'mercury', mips: 'mipsasm', moon: 'moonscript',
+  nt: 'nestedtext', nginxconf: 'nginx', nixos: 'nix', ml: 'sml', scad: 'openscad', 'pf.conf': 'pf',
+  postgres: 'pgsql', postgresql: 'pgsql', pwsh: 'powershell', ps: 'powershell', ps1: 'powershell', pde: 'processing',
+  proto: 'protobuf', pp: 'puppet', pb: 'purebasic', pbi: 'purebasic', k: 'q', kdb: 'q', qt: 'qml', re: 'reasonml',
+  graph: 'roboconf', instances: 'roboconf', mikrotik: 'routeros', scm: 'scheme', sci: 'scilab', st: 'smalltalk',
+  stanfuncs: 'stan', do: 'stata', ado: 'stata', p21: 'step21', step: 'step21', stp: 'step21', styl: 'stylus',
+  tk: 'tcl', craftcms: 'twig', vbs: 'vbscript', v: 'verilog', sv: 'verilog', svh: 'verilog', tao: 'xl',
+  xpath: 'xquery', xq: 'xquery', xqm: 'xquery', zep: 'zephir'
+};
+/** Code blocks drawn otherwise than by highlight.js */
+const NOT_CODE = new Set(['mermaid', 'math', 'latex', 'katex', 'tex', 'svg', 'terminal', 'console', 'shell-session', 'term', 'plaintext', 'text', 'txt']);
+const FENCE_LANGUAGE = /^ {0,3}(?:`{3,}|~{3,})[ \t]*([^\s`[{]+)/gm;
+const languages = {};
+
+/** Loads the highlight.js grammar of a language once, when the bundle has not got it ; unknown languages stay plain. */
+export function ensureLanguage(language) {
+  const name = language.toLowerCase();
+  if (!window.hljs || window.hljs.getLanguage(name) || NOT_CODE.has(name)) return Promise.resolve();
+  const file = LANGUAGE_FILES[name] || (GRAMMARS.has(name) ? name : null);
+  if (!file) return Promise.resolve();
+  languages[file] = languages[file] || new Promise(resolve => {
+    const script = document.createElement('script');
+    script.src = `${LANGUAGES}${file}.min.js`;
+    script.onload = resolve;
+    script.onerror = resolve;
+    document.head.appendChild(script);
+  });
+  return languages[file];
+}
+
+/** The languages of the code blocks of some markdown, loaded. */
+function ensureLanguages(markdown) {
+  const names = new Set([...markdown.matchAll(FENCE_LANGUAGE)].map(m => m[1].toLowerCase()));
+  return Promise.all([...names].map(ensureLanguage));
 }
 
 const escapeHtml = text => String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

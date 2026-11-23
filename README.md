@@ -79,7 +79,7 @@ Markdown extensions :
 
 | Syntax                                       | Shows                                                       |
 |----------------------------------------------|-------------------------------------------------------------|
-| ` ```scala ` , ` ```scala [2-4] `            | highlighted code (highlight.js), highlighted lines          |
+| ` ```scala ` , ` ```scala [2-4] `            | highlighted code (highlight.js, its 192 languages), lines   |
 | ` ```mermaid `                               | mermaid diagrams                                            |
 | `$inline$`, `$$display$$`, ` ```math `       | maths (KaTeX)                                               |
 | ` ```svg ` or inline `<svg>`                 | SVG pictures                                                |
